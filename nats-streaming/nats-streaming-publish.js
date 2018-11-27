@@ -8,7 +8,7 @@ module.exports = function(RED) {
 
         // connect to nats streaming server
         let stan = require('node-nats-streaming')
-            .connect(this.server.cluster, 'test-publish', { url:'nats://' + this.server.server + ':' + this.server.port });
+            .connect(this.server.cluster, config.clientID, { url:'nats://' + this.server.server + ':' + this.server.port });
 
         // on input send message
         node.on('input', function(msg) {

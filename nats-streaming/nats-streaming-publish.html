@@ -6,7 +6,8 @@
             name: {value:""},
             server: {value:"", type:"nats-streaming-server"},
             message: {value:""},
-            channel: {value: "foo", required:true}
+            channel: {value: "", required:true},
+            clientID: {value: "", required:true}
         },
         inputs:1,
         outputs:0,
@@ -29,6 +30,10 @@
     <div class="form-row">
         <label for="node-input-channel"><i class="fa fa-stack-exchange"></i> Channel</label>
         <input type="text" id="node-input-channel" placeholder="Channel">
+    </div>
+    <div class="form-row">
+        <label for="node-input-clientID"><i class="fa fa-stack-exchange"></i> Client ID</label>
+        <input type="text" id="node-input-clientID" placeholder="Client ID">
     </div>
     <div class="form-row">
         <label for="node-input-message"><i class="fa fa-stack-exchange"></i> Message</label>
