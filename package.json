@@ -19,7 +19,6 @@
   },
   "node-red": {
     "nodes": {
-      "nats-test": "nats-test.js",
       "nats-publish": "nats-publish.js",
       "nats-streaming-publish": "/nats-streaming/nats-streaming-publish.js",
       "nats-streaming-subscribe": "/nats-streaming/nats-streaming-subscribe.js",
