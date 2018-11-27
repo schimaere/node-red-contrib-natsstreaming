@@ -11,7 +11,6 @@ module.exports = function(RED) {
         var subscription = stan.subscribe('foo', opts);
         subscription.on('message', function (msg) {
             let msgToSend;
-            // console.log('Received a message [' + msg.getSequence() + '] ' + msg.getData());
             msgToSend = { payload: ('Received a message [' + msg.getSequence() + '] ' + msg.getData()) };
             node.send(msgToSend)
         });
