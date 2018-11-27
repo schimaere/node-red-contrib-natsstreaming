@@ -14,7 +14,8 @@
   "author": "schimaere",
   "license": "ISC",
   "dependencies": {
-    "nats": "^1.0.1"
+    "nats": "^1.0.1",
+    "node-nats-streaming": "0.0.51"
   },
   "node-red": {
     "nodes": {
