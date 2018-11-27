@@ -12,7 +12,7 @@ module.exports = function(RED) {
 
         // on input send message
         node.on('input', function(msg) {
-            stan.publish('foo', config.message, function(err, guid){
+            stan.publish(config.channel, config.message, function(err, guid){
                 if(err) {
                 console.log('publish failed: ' + err);
                 } else {
