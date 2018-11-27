@@ -4,9 +4,9 @@
         color: '#C7E9C0',
         defaults: {
             name: {value:""},
-            server: {value:""},
-            port: {value:""},
-            message: {value:""}
+            server: {value:"", type:"nats-streaming-server"},
+            channel: {value: "", required:true},
+            clientID: {value: "", required:true}
         },
         inputs:0,
         outputs:1,
@@ -27,15 +27,15 @@
         <input type="text" id="node-input-server" placeholder="localhost">
     </div>
     <div class="form-row">
-            <label for="node-input-port"><i class="fa fa-stack-exchange"></i> Port</label>
-            <input type="text" id="node-input-port" placeholder="4222">
-        </div>
+        <label for="node-input-channel"><i class="fa fa-stack-exchange"></i> Channel</label>
+        <input type="text" id="node-input-channel" placeholder="Channel">
+    </div>
     <div class="form-row">
-        <label for="node-input-message"><i class="fa fa-stack-exchange"></i> Message</label>
-        <input type="text" id="node-input-message" placeholder="Message">
+        <label for="node-input-clientID"><i class="fa fa-stack-exchange"></i> Client ID</label>
+        <input type="text" id="node-input-clientID" placeholder="Client ID">
     </div>
 </script>
 
 <script type="text/x-red" data-help-name="nats-streaming-subscribe">
-    <p>Send message to NATS</p>
+    <p>Subscribe to a NATS streaming server</p>
 </script>
