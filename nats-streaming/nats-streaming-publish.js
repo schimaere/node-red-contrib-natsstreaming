@@ -1,13 +1,18 @@
 "use-strict";
-var stan = require('node-nats-streaming').connect('test-cluster', 'test-publish', {url:"nats://10.0.2.15:4223"});
 
 module.exports = function(RED) {
     function NatsStreamingPublishNode(config) {
         RED.nodes.createNode(this,config);
-        var node = this;
+        let node = this;
+        this.server = RED.nodes.getNode(config.server);
+
+        // connect to nats streaming server
+        let stan = require('node-nats-streaming')
+            .connect(this.server.cluster, 'test-publish', { url:'nats://' + this.server.server + ':' + this.server.port });
+
+        // on input send message
         node.on('input', function(msg) {
-            // Simple Publisher (all publishes are async in the node version of the client)
-            stan.publish('foo', 'Hello node-nats-streaming from Node-RED!', function(err, guid){
+            stan.publish('foo', config.message, function(err, guid){
                 if(err) {
                 console.log('publish failed: ' + err);
                 } else {
@@ -15,6 +20,12 @@ module.exports = function(RED) {
                 }
             });
         });
+
+        // on node close the nats stream connection is also closed
+        node.on('close', function() {
+            stan.close();
+        });
+
     }
     RED.nodes.registerType("nats-streaming-publish",NatsStreamingPublishNode);
 }

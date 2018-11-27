@@ -2,11 +2,12 @@
     RED.nodes.registerType('nats-streaming-server',{
         category: 'config',
         defaults: {
-            host: {value:"localhost",required:true},
-            port: {value:1234,required:true,validate:RED.validators.number()},
+            server: {value:"localhost",required:true},
+            port: {value:4223,required:true,validate:RED.validators.number()},
+            cluster: {value:"test-cluster", required:true}
         },
         label: function() {
-            return this.host+":"+this.port;
+            return this.server+":"+this.port;
         }
     });
 </script>
@@ -19,5 +20,9 @@
     <div class="form-row">
         <label for="node-config-input-port"><i class="icon-bookmark"></i> Port</label>
         <input type="text" id="node-config-input-port">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-cluster"><i class="icon-bookmark"></i> Cluster</label>
+        <input type="text" id="node-config-input-cluster">
     </div>
 </script>

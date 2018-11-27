@@ -5,8 +5,8 @@
         defaults: {
             name: {value:""},
             server: {value:"", type:"nats-streaming-server"},
-            port: {value:""},
-            message: {value:""}
+            message: {value:""},
+            channel: {value: "foo"}
         },
         inputs:1,
         outputs:0,
@@ -25,6 +25,10 @@
     <div class="form-row">
         <label for="node-input-server"><i class="fa fa-stack-exchange"></i> Server</label>
         <input type="text" id="node-input-server" placeholder="localhost">
+    </div>
+    <div class="form-row">
+        <label for="node-input-channel"><i class="fa fa-stack-exchange"></i> Channel</label>
+        <input type="text" id="node-input-channel" placeholder="Channel">
     </div>
     <div class="form-row">
         <label for="node-input-message"><i class="fa fa-stack-exchange"></i> Message</label>
