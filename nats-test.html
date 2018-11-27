@@ -1,0 +1,26 @@
+<script type="text/javascript">
+    RED.nodes.registerType('nats-test',{
+        category: 'NATS streaming',
+        color: '#a6bbcf',
+        defaults: {
+            name: {value:""}
+        },
+        inputs:1,
+        outputs:0,
+        icon: "file.png",
+        label: function() {
+            return this.name||"nats-test";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="nats-test">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-stack-exchange"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="nats-test">
+    <p>NATS test</p>
+</script>

@@ -1,0 +1,25 @@
+{
+  "name": "node-red-contrib-natsstreaming",
+  "version": "0.0.1",
+  "description": "NATS streaming with Node-RED",
+  "main": "nats-test.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "node-red",
+    "nats",
+    "nats-streaming"
+  ],
+  "author": "schimaere",
+  "license": "ISC",
+  "dependencies": {
+    "nats": "^1.0.1"
+  },
+  "node-red": {
+    "nodes": {
+      "nats-test": "nats-test.js",
+      "nats-publish": "nats-publish.js"
+    }
+  }
+}
