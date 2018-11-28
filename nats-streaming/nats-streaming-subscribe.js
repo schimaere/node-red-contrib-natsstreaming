@@ -27,11 +27,10 @@ module.exports = function(RED) {
                     break;
                 case 'at_date':
                     let timeParts = config.start_option.split('-');
-                    let startTime = new Date(timeParts[0], timeParts[1], timeParts[2], 0,0,0,0);
+                    let startTime = new Date(timeParts[0], timeParts[1] -1, timeParts[2], 0,0,0,0);
                     opts.setStartTime(startTime)
                     break;
                 case 'at_time':
-                    node.log(Date.now().toLocaleString());
                     opts.setStartAtTimeDelta(config.start_option);
                     break;
                 default:
