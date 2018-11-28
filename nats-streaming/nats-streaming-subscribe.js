@@ -9,10 +9,35 @@ module.exports = function(RED) {
         let stan = require('node-nats-streaming')
             .connect(this.server.cluster, config.clientID, { url:'nats://' + this.server.server + ':' + this.server.port });
 
-        var subscription
+        let subscription
         stan.on('connect', function () {
             // Subscriber can specify how many existing messages to get.
-            var opts = stan.subscriptionOptions().setStartWithLastReceived();        
+            let opts = stan.subscriptionOptions();
+
+            // set the starting point in the stream, default is last received
+            switch(config.start) {
+                case 'last_received':
+                    opts.setStartWithLastReceived();
+                    break;
+                case 'all':
+                    opts.setDeliverAllAvailable();
+                    break;
+                case 'at_sequence':
+                    opts.setStartAtSequence(config.start_option);
+                    break;
+                case 'at_date':
+                    let timeParts = config.option.split('-');
+                    let startTime = new Date(timeParts[0], timeParts[1], timeParts[2], 0,0,0,0);
+                    opts.setStartTime(startTime)
+                    break;
+                case 'at_time':
+                    opts.setStartAtTimeDelta(config.start_option);
+                    break;
+                default:
+                    opts.setStartWithLastReceived();
+                    break;
+            }
+
             subscription = stan.subscribe(config.channel, opts);
             subscription.on('message', function (msg) {
                 let msgToSend;

@@ -6,7 +6,9 @@
             name: {value:""},
             server: {value:"", type:"nats-streaming-server"},
             channel: {value: "", required:true},
-            clientID: {value: "", required:true}
+            clientID: {value: "", required:true},
+            start: {value: "", required:true},
+            start_option: {value: ""}
         },
         inputs:0,
         outputs:1,
@@ -30,6 +32,20 @@
         <label for="node-input-channel"><i class="fa fa-stack-exchange"></i> Channel</label>
         <input type="text" id="node-input-channel" placeholder="Channel">
     </div>
+    <div class="form-row">
+        <label for="node-input-start"><i class="fa fa-stack-exchange"></i> Start</label>
+        <select id="node-input-start" style="width:70%">
+            <option value="last_reveived">Last received</option>
+            <option value="all">All</option>
+            <option value="at_sequence">At sequence</option>
+            <option value="at_date">At date</option>
+            <option value="at_time">At time</option>
+        </select>
+    </div>
+    <div class="form-row">
+            <label for="node-input-start_option"><i class="fa fa-stack-exchange"></i> Start option</label>
+            <input type="text" id="node-input-start_option" placeholder="Start option">
+        </div>
     <div class="form-row">
         <label for="node-input-clientID"><i class="fa fa-stack-exchange"></i> Client ID</label>
         <input type="text" id="node-input-clientID" placeholder="Client ID">
