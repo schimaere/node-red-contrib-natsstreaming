@@ -22,10 +22,11 @@ module.exports = function(RED) {
         });
 
         // on node close the nats stream subscription is and connection is also closed
-        node.on('close', function() {
+        node.on('close', function(done) {
             subscription.unsubscribe();
             subscription.on('unsubscribed', function() {
                 stan.close();
+                done();
             });
         });
     }
