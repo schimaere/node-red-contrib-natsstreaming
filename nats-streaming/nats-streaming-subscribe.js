@@ -31,6 +31,7 @@ module.exports = function(RED) {
                     opts.setStartTime(startTime)
                     break;
                 case 'at_time':
+                    node.log(Date.now().toLocaleString());
                     opts.setStartAtTimeDelta(config.start_option);
                     break;
                 default:
@@ -41,6 +42,7 @@ module.exports = function(RED) {
             subscription = stan.subscribe(config.channel, opts);
             subscription.on('message', function (msg) {
                 let msgToSend;
+                node.log(msg);
                 msgToSend = { payload: ('Received a message [' + msg.getSequence() + '] ' + msg.getData()) };
                 node.send(msgToSend)
             });
