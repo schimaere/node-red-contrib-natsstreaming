@@ -26,7 +26,7 @@ module.exports = function(RED) {
                     opts.setStartAtSequence(config.start_option);
                     break;
                 case 'at_date':
-                    let timeParts = config.option.split('-');
+                    let timeParts = config.start_option.split('-');
                     let startTime = new Date(timeParts[0], timeParts[1], timeParts[2], 0,0,0,0);
                     opts.setStartTime(startTime)
                     break;
