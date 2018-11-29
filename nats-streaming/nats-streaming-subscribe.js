@@ -52,16 +52,13 @@ module.exports = function(RED) {
 
             // if queue group is true sets it
             if(config.queue_group) {
-                node.log("set queue gruoup with name: " + config.queue_group_name);
                 subscription = stan.subscribe(config.channel, config.queue_group_name, opts);
             } else {
-                node.log("set without queue group")
                 subscription = stan.subscribe(config.channel, opts);
             }
             
             subscription.on('message', function (msg) {
                 let msgToSend;
-                node.log('recieved message, node: ' + config.clientID);
                 msgToSend = { payload: msg.getData(), sequence: msg.getSequence()};
                 node.send(msgToSend)
             });
