@@ -1,24 +1,48 @@
 <script type="text/javascript">
-    RED.nodes.registerType('nats-streaming-subscribe',{
+    RED.nodes.registerType('nats-streaming-subscribe', {
         category: 'NATS streaming',
         color: '#FDF0C2',
         defaults: {
-            name: {value:""},
-            server: {value:"", type:"nats-streaming-server"},
-            channel: {value: "", required:true},
-            clientID: {value: "", required:true},
-            start: {value: "", required:true},
-            start_option: {value: ""},
-            durable: {value: ""},
-            durable_name: {value: ""},
-            queue_group: {value: ""},
-            queue_group_name: {value: ""}
+            name: {
+                value: ""
+            },
+            server: {
+                value: "",
+                type: "nats-streaming-server"
+            },
+            channel: {
+                value: "",
+                required: true
+            },
+            clientID: {
+                value: "",
+                required: true
+            },
+            start: {
+                value: "",
+                required: true
+            },
+            start_option: {
+                value: ""
+            },
+            durable: {
+                value: ""
+            },
+            durable_name: {
+                value: ""
+            },
+            queue_group: {
+                value: ""
+            },
+            queue_group_name: {
+                value: ""
+            }
         },
-        inputs:0,
-        outputs:1,
+        inputs: 0,
+        outputs: 1,
         icon: "file.png",
-        label: function() {
-            return this.name||"nats-streaming-subscribe";
+        label: function () {
+            return this.name || "nats-streaming-subscribe";
         }
     });
 </script>
