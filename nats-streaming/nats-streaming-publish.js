@@ -1,5 +1,7 @@
 "use-strict";
 
+const checkMSG = require('../checkMSG');
+
 module.exports = function(RED) {
     function NatsStreamingPublishNode(config) {
         RED.nodes.createNode(this,config);
@@ -12,11 +14,30 @@ module.exports = function(RED) {
 
         // on input send message
         node.on('input', function(msg) {
-            stan.publish(config.channel, config.message, function(err, guid){
+            let message;
+            let channel;
+            
+            //checks if msg has configurations and sets them
+            if(checkMSG(msg.payload)) {
+                message = msg.payload;
+            } else {
+                message = config.message;
+            }
+
+            if(checkMSG(msg.channel)) {
+                channel = msg.channel;
+            } else {
+                channel = config.channel;
+            }
+
+            node.log(channel);
+            node.log(message);
+            stan.publish(channel, message, function(err, guid){
                 if(err) {
-                console.log('publish failed: ' + err);
+                node.log('publish failed: ' + err);
+                node.err('problem while publishing message', msg)
                 } else {
-                console.log('published message with guid: ' + guid);
+                node.log('published message with guid: ' + guid);
                 }
             });
         });
