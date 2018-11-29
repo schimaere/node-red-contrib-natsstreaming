@@ -45,12 +45,20 @@ module.exports = function(RED) {
                     break;
             }
 
+            // if durable is true sets it
             if(config.durable) {
-                opts.setDurableName('my-durable');
+                opts.setDurableName(config.durable_name);
             }
 
-            // subscription = stan.subscribe(config.channel, opts);
-            subscription = stan.subscribe(config.channel, 'foo.workers', opts);
+            // if queue group is true sets it
+            if(config.queue_group) {
+                node.log("set queue gruoup with name: " + config.queue_group_name);
+                subscription = stan.subscribe(config.channel, config.queue_group_name, opts);
+            } else {
+                node.log("set without queue group")
+                subscription = stan.subscribe(config.channel, opts);
+            }
+            
             subscription.on('message', function (msg) {
                 let msgToSend;
                 node.log('recieved message, node: ' + config.clientID);

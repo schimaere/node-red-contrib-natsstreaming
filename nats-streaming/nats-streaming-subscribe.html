@@ -9,7 +9,10 @@
             clientID: {value: "", required:true},
             start: {value: "", required:true},
             start_option: {value: ""},
-            durable: {value: ""}
+            durable: {value: ""},
+            durable_name: {value: ""},
+            queue_group: {value: ""},
+            queue_group_name: {value: ""}
         },
         inputs:0,
         outputs:1,
@@ -26,7 +29,7 @@
         <input type="text" id="node-input-name" placeholder="Name">        
     </div>
     <div class="form-row">
-        <label for="node-input-server"><i class="fa fa-stack-exchange"></i> Server</label>
+        <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
         <input type="text" id="node-input-server" placeholder="localhost">
     </div>
     <div class="form-row">
@@ -43,17 +46,25 @@
             <option value="at_time">At time</option>
         </select>
     </div>
-    <div class="form-row">
+    <div>
         <label for="node-input-start_option"><i class="fa fa-stack-exchange"></i> Start option</label>
-        <input type="text" id="node-input-start_option" placeholder="Start option">
+        <input type="text" id="node-input-start_option" placeholder="Start option" style="width:93%; margin-bottom:12px;">
     </div>
     <div class="form-row">
         <input type="checkbox" id="node-input-durable" value="Durable" style="display:inline-block; width: auto; vertical-align: top;">
-        <label for="node-input-durable" style="width: auto"><i class="fa fa-stack-exchange"></i> Durable subscription</label>       
+        <label for="node-input-durable" style="width: auto"></i> Durable subscription</label>       
+    </div>
+    <div">
+        <label for="node-input-durable_name"><i class="fa fa-stack-exchange"></i> Durable name</label>
+        <input type="text" id="node-input-durable_name" placeholder="Durable name" style="width:93%; margin-bottom:12px;">
     </div>
     <div class="form-row">
-            <input type="checkbox" id="node-input-group" value="Group" style="display:inline-block; width: auto; vertical-align: top;">
-            <label for="node-input-group" style="width: auto"><i class="fa fa-stack-exchange"></i> Queue group</label>       
+            <input type="checkbox" id="node-input-queue_group" value="Group" style="display:inline-block; width: auto; vertical-align: top;">
+            <label for="node-input-queue_group" style="width: auto">Queue group</label>       
+    </div>
+    <div>
+            <label for="node-input-queue_group_name"><i class="fa fa-stack-exchange"></i> Queue group name</label>
+            <input type="text" id="node-input-queue_group_name" placeholder="Queue group name" style="width:93%; margin-bottom:12px;">
         </div>
     <div class="form-row">
         <label for="node-input-clientID"><i class="fa fa-stack-exchange"></i> Client ID</label>
