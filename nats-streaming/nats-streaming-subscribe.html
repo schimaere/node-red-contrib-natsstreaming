@@ -8,7 +8,8 @@
             channel: {value: "", required:true},
             clientID: {value: "", required:true},
             start: {value: "", required:true},
-            start_option: {value: ""}
+            start_option: {value: ""},
+            durable: {value: ""}
         },
         inputs:0,
         outputs:1,
@@ -47,9 +48,13 @@
         <input type="text" id="node-input-start_option" placeholder="Start option">
     </div>
     <div class="form-row">
-        <label for="node-input-durable"><i class="fa fa-stack-exchange"></i> Durable</label>
-        <input type="checkbox" id="node-input-durable" value="Durable" style="width:5%">
+        <input type="checkbox" id="node-input-durable" value="Durable" style="display:inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-durable" style="width: auto"><i class="fa fa-stack-exchange"></i> Durable subscription</label>       
     </div>
+    <div class="form-row">
+            <input type="checkbox" id="node-input-group" value="Group" style="display:inline-block; width: auto; vertical-align: top;">
+            <label for="node-input-group" style="width: auto"><i class="fa fa-stack-exchange"></i> Queue group</label>       
+        </div>
     <div class="form-row">
         <label for="node-input-clientID"><i class="fa fa-stack-exchange"></i> Client ID</label>
         <input type="text" id="node-input-clientID" placeholder="Client ID">

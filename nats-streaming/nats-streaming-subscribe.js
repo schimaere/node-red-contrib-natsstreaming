@@ -26,8 +26,15 @@ module.exports = function(RED) {
                     opts.setStartAtSequence(config.start_option);
                     break;
                 case 'at_date':
-                    let timeParts = config.start_option.split('-');
-                    let startTime = new Date(timeParts[0], timeParts[1] -1, timeParts[2], 0,0,0,0);
+                    let timeParts;
+                    let startTime
+                    try{
+                        timeParts = config.start_option.split('-');
+                        startTime = new Date(timeParts[0], timeParts[1] -1, timeParts[2], 0,0,0,0);
+                    }
+                    catch(err) {
+                        node.error('wrong format in start option. Must be YYYY-MM-DD', msg);                        
+                    }                    
                     opts.setStartTime(startTime)
                     break;
                 case 'at_time':
@@ -38,11 +45,16 @@ module.exports = function(RED) {
                     break;
             }
 
-            subscription = stan.subscribe(config.channel, opts);
+            if(config.durable) {
+                opts.setDurableName('my-durable');
+            }
+
+            // subscription = stan.subscribe(config.channel, opts);
+            subscription = stan.subscribe(config.channel, 'foo.workers', opts);
             subscription.on('message', function (msg) {
                 let msgToSend;
-                node.log(msg);
-                msgToSend = { payload: ('Received a message [' + msg.getSequence() + '] ' + msg.getData()) };
+                node.log('recieved message, node: ' + config.clientID);
+                msgToSend = { payload: msg.getData(), sequence: msg.getSequence()};
                 node.send(msgToSend)
             });
         });
