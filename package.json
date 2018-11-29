@@ -13,9 +13,8 @@
     "nats-streaming"
   ],
   "author": "schimaere",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "nats": "^1.0.1",
     "node-nats-streaming": "0.0.51"
   },
   "node-red": {
