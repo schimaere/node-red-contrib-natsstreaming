@@ -1,6 +1,6 @@
 "use-strict";
 
-const checkMSG = require('../checkMSG');
+const checkMSG = require('./checkMSG');
 
 module.exports = function (RED) {
     function NatsStreamingPublishNode(config) {
