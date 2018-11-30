@@ -100,20 +100,54 @@
     <p>Subscribe to a NATS streaming server</p>
 
     <h3>Output</h3>
-    <ol class="node-ports">
-        <li>Standard output
-            <dl class="message-properties">
-                <dt>payload <span class="property-type">string</span></dt>
-                <dd>the standard output of the command.</dd>
-            </dl>
-            <dl class="message-properties">
-                <dt>sequence <span class="property-type">string</span></dt>
-                <dd>The sequence number of the nats message</dd>
-            </dl>
-        </li>
-    </ol>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string</span></dt>
+        <dd>the standard output of the command.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>sequence <span class="property-type">string</span></dt>
+        <dd>The sequence number of the nats message</dd>
+    </dl>
     
-    <h3>Details</h3>
-    
+    <h3>Details</h3>    
+    <h4>Start option</h4>
+    <p>is only needed when start is set to 
+        <ol>
+            <li>At sequenc
+                <dl class="message-properties">
+                    <dt>Start option</dt>
+                    <dd>The number of the first returned message sequence</dd>
+                </dl>
+            </li>
+            <li>At date
+                <dl class="message-properties">
+                    <dt>Start option</dt>
+                    <dd>The date of the first returned message</dd>
+                </dl>
+            </li>
+            <li>At time
+                <dl class="message-properties">
+                    <dt>Start option</dt>
+                    <dd>The in ms into the past sinc when to return messages</dd>
+                </dl>
+            </li>
+        </ol>
+    </p>
+
+    <h4>Durable name</h4>
+    <p>is only needed when the durable subscription checkbox is ticked
+        <dl class="message-properties">
+            <dt>Durable name</dt>
+            <dd>With wich name is the durable set on the NATS server</dd>
+        </dl>
+    </p>
+
+    <h4>Queue group name</h4>
+    <p>is only needed when the queue group checkbox is ticked
+        <dl class="message-properties">
+            <dt>Queue group name</dt>
+            <dd>With wich name is the queue group set on the NATS server</dd>
+        </dl>
+    </p>
     
 </script>
