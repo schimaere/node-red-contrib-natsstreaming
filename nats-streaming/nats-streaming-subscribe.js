@@ -4,11 +4,7 @@ module.exports = function (RED) {
     function NatsStreamingSubscribeNode(config) {
         RED.nodes.createNode(this, config);
         var node = this;
-        this.status({
-            fill: "red",
-            shape: "ring",
-            text: "disconnected"
-        });
+        setStatusRed();
         this.server = RED.nodes.getNode(config.server);
 
         let stan = require('node-nats-streaming')
@@ -20,16 +16,11 @@ module.exports = function (RED) {
             node.log(err);
             node.error('Could not connect to server', err);
         });
-        
+
         let subscription
         stan.on('connect', function () {
-            node.status({
-                fill: "green",
-                shape: "dot",
-                text: "connected"
-            });
+            setStatusGreen();
 
-            // Subscriber can specify how many existing messages to get.
             let opts = stan.subscriptionOptions();
 
             // set the starting point in the stream, default is last received
@@ -41,34 +32,44 @@ module.exports = function (RED) {
                     opts.setDeliverAllAvailable();
                     break;
                 case 'at_sequence':
-                    opts.setStartAtSequence(config.start_option);
+                    if (!isNaN(+config.start_option)) {
+                        opts.setStartAtSequence(config.start_option);
+                    } else {
+                        setStatusRed();
+                        node.error("Start option has to be a number", config.start_option);
+                    }
                     break;
                 case 'at_date':
-                    let timeParts;
-                    let startTime
-                    try {
+                    if (checkDate(config.start_option)) {
+                        let timeParts;
+                        let startTime
                         timeParts = config.start_option.split('-');
                         startTime = new Date(timeParts[0], timeParts[1] - 1, timeParts[2], 0, 0, 0, 0);
-                    } catch (err) {
-                        node.error('wrong format in start option. Must be YYYY-MM-DD', msg);
+                        opts.setStartTime(startTime);
+                    } else {
+                        setStatusRed();
+                        node.error("Wrong format in start option. Has to be YYYY-MM-DD", config.start_option);
                     }
-                    opts.setStartTime(startTime)
                     break;
                 case 'at_time':
-                    opts.setStartAtTimeDelta(config.start_option);
+                    if (!isNaN(config.start_option)) {
+                        opts.setStartAtTimeDelta(config.start_option);
+                    } else {
+                        setStatusRed();
+                        node.error('Start option has to be a number', config.start_option);
+                    }
                     break;
                 default:
                     opts.setStartWithLastReceived();
                     break;
             }
 
-            // if durable is true sets it
+            // if durable is true sets it with durable_name
             if (config.durable) {
-                node.log("set durable name");
                 opts.setDurableName(config.durable_name);
             }
 
-            // if queue group is true sets it
+            // if queue group is true sets it with queue_group_name
             if (config.queue_group) {
                 subscription = stan.subscribe(config.channel, config.queue_group_name, opts);
             } else {
@@ -87,17 +88,58 @@ module.exports = function (RED) {
 
         // on node close the nats stream subscription is and connection is also closed
         node.on('close', function (done) {
-            node.status({
-                fill: "red",
-                shape: "ring",
-                text: "disconnected"
-            });
+            setStatusRed();
             subscription.unsubscribe();
             subscription.on('unsubscribed', function () {
                 stan.close();
                 done();
             });
         });
+
+        function setStatusGreen() {
+            node.status({
+                fill: "green",
+                shape: "dot",
+                text: "connected"
+            });
+        }
+
+        function setStatusRed() {
+            node.status({
+                fill: "red",
+                shape: "ring",
+                text: "disconnected"
+            });
+        }
+
+
+        // checks if the string could be parsed to a date
+        function checkDate(dateString) {
+            let timeParts = dateString.split('-');
+            node.log(timeParts);
+
+            // timeParts has to have 3 parts
+            if (!(Object.keys(timeParts).length > 2)) {
+                return false;
+            }
+
+            // the first part is the year and has to be 4 digits
+            if (!(/^\d\d\d\d$/.test(timeParts[0]))) {
+                return false;
+            }
+
+            // secound part is the month and has to be a number and between 1 and 12
+            if (!(!isNaN(timeParts[1]) && +timeParts[1] >= 1 && +timeParts[1] <= 12)) {
+                return false;
+            }
+
+            // third part is the day and has to be a number and between 1 and 31
+            if (!(!isNaN(timeParts[2] && +timeParts[2] >= 1 && +timeParts[2] <= 31))) {
+                return false;
+            }
+
+            return true;
+        }
     }
 
     RED.nodes.registerType("nats-streaming-subscribe", NatsStreamingSubscribeNode);

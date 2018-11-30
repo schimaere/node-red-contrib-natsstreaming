@@ -26,9 +26,7 @@ module.exports = function (RED) {
                 shape: "dot",
                 text: "connected"
             });
-        })
-
-        
+        })        
 
         stan.on('error', function (err) {
             node.log(err);
@@ -54,9 +52,7 @@ module.exports = function (RED) {
             } else {
                 channel = config.channel;
             }
-
-            node.log(channel);
-            node.log(message);
+            
             stan.publish(channel, message, function (err, guid) {
                 if (err) {
                     node.log('publish failed: ' + err);
