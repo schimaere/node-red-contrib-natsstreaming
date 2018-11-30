@@ -42,7 +42,15 @@ module.exports = function (RED) {
 
             //checks if msg has configurations and sets them
             if (checkMSG(msg.payload)) {
-                message = msg.payload;
+                if(typeof msg.payload != 'string') {
+                    try{
+                        message = JSON.stringify(msg.payload);
+                    } catch(err) {
+                        node.error(err, msg.payload);
+                    }
+                } else {
+                    message = msg.payload;
+                }                
             } else {
                 message = config.message;
             }
