@@ -116,7 +116,6 @@ module.exports = function (RED) {
         // checks if the string could be parsed to a date
         function checkDate(dateString) {
             let timeParts = dateString.split('-');
-            node.log(timeParts);
 
             // timeParts has to have 3 parts
             if (!(Object.keys(timeParts).length > 2)) {
