@@ -89,11 +89,17 @@ module.exports = function (RED) {
         // on node close the nats stream subscription is and connection is also closed
         node.on('close', function (done) {
             setStatusRed();
-            subscription.unsubscribe();
-            subscription.on('unsubscribed', function () {
+
+            // if the subscription is durable do not unsubscribe
+            if(config.durable) {
                 stan.close();
-                done();
-            });
+            } else {
+                subscription.unsubscribe();
+                subscription.on('unsubscribed', function () {
+                    stan.close();
+                    done();
+                });
+            }                        
         });
 
         function setStatusGreen() {
