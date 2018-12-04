@@ -93,6 +93,7 @@ module.exports = function (RED) {
             // if the subscription is durable do not unsubscribe
             if(config.durable) {
                 stan.close();
+                done();
             } else {
                 subscription.unsubscribe();
                 subscription.on('unsubscribed', function () {
