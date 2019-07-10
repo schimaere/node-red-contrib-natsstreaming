@@ -36,7 +36,14 @@
             },
             queue_group_name: {
                 value: ""
+            },
+            autoacknowledge: {
+                value: true
+            },
+            ackwait: {
+                value: 30
             }
+
         },
         inputs: 0,
         outputs: 1,
@@ -94,6 +101,14 @@
         <label for="node-input-clientID"><i class="fa fa-stack-exchange"></i> Client ID</label>
         <input type="text" id="node-input-clientID" placeholder="Client ID">
     </div>
+    <div class="form-row">
+        <input type="checkbox" id="node-input-autoacknowledge" value="AutoAcknowledge" style="display:inline-block checked; width: auto; vertical-align: top;">
+        <label for="node-input-autoacknowledge" style="width: auto"></i> Auto acknowledge messages from subscription</label>       
+    </div>
+    <div">
+        <label for="node-input-ackwait"><i class="fa fa-stack-exchange"></i> Acknowledge wait time in s</label>
+        <input type="text" id="node-input-ackwait" placeholder="Acknowledge wait time in s" style="width:93%; margin-bottom:12px;">
+    </div>
 </script>
 
 <script type="text/x-red" data-help-name="nats-streaming-subscribe">
@@ -147,6 +162,17 @@
         <dl class="message-properties">
             <dt>Queue group name</dt>
             <dd>With wich name is the queue group set on the NATS server</dd>
+        </dl>
+    </p>
+
+    <h4>Auto acknowledge</h4>
+    <p>set this to acknowledge all incoming messages. If not set acknowledge message with the nats-sreaming-acknowledge Node</p>
+
+    <h4>Auto acknowledge time in s</h4>
+    <p>is only needed when the Auto acknowledge checkbox is not ticked
+        <dl class="message-properties">
+            <dt>Auto acknowledge time in s</dt>
+            <dd>The time in secounds after wich nats-straming should resend the message default is 30s</dd>
         </dl>
     </p>
     

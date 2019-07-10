@@ -69,6 +69,21 @@ module.exports = function (RED) {
                 opts.setDurableName(config.durable_name);
             }
 
+            // if autoacknowledge is set it with 30s waiting time
+            if(config.autoacknowledge == false) {                
+                if(!isNaN(config.ackwait)) {
+                    opts.setManualAckMode(true);
+                    opts.setAckWait(config.ackwait * 1000);
+                }
+                else{
+                    setStatusRed();
+                    node.error('Acknowledge wait has to be a number', config.ackwait);
+                }
+                
+            }
+
+            
+
             // if queue group is true sets it with queue_group_name
             if (config.queue_group) {
                 subscription = stan.subscribe(config.channel, config.queue_group_name, opts);
@@ -76,14 +91,9 @@ module.exports = function (RED) {
                 subscription = stan.subscribe(config.channel, opts);
             }
 
-            subscription.on('message', function (msg) {
-                let msgToSend;
-                msgToSend = {
-                    payload: msg.getData(),
-                    sequence: msg.getSequence()
-                };
-                node.send(msgToSend)
-            });
+            // on nats-streaming message
+            subscription.on('message', msg => handleMessage(msg));
+            
         });
 
         // on node close the nats stream subscription is and connection is also closed
@@ -102,6 +112,20 @@ module.exports = function (RED) {
                 });
             }                        
         });
+
+        function handleMessage(msg)
+        {
+            let boundAck = msg.ack.bind(msg);
+            let msgToSend;
+                msgToSend = {
+                    payload: msg.getData(),
+                    sequence: msg.getSequence(),
+                    autoacknowledge: config.autoacknowledge,
+                    streaming_msg: msg,
+                    ack: boundAck
+                };
+                node.send(msgToSend)
+        }
 
         function setStatusGreen() {
             node.status({

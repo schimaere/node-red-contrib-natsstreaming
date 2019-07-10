@@ -1,0 +1,42 @@
+<script type="text/javascript">
+    RED.nodes.registerType('nats-streaming-acknowledge', {
+        category: 'NATS streaming',
+        color: '#FDF0C2',
+        defaults: {
+            name: {
+                value: ""
+            }
+        },
+        inputs: 1,
+        outputs: 0,
+        icon: "nats-icon-white.png",
+        align: 'right',
+        label: function () {
+            
+            return this.name || "nats-streaming-acknowledge";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="nats-streaming-acknowledge">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-stack-exchange"></i> Name</label>        
+        <input type="text" id="node-input-name" placeholder="Name">        
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="nats-streaming-acknowledge">
+    <p>Autoacknowledge a resieved message from NATS Streaming server</p>
+
+    <h3>Inputs</h3>
+        <dl class="message-properties">
+            <dt>autoautoacknowledge
+                <span class="property-type">bool</span>
+            </dt>
+            <dd> False if the message should be acknowleded  </dd>
+            <dt>ack
+                <span class="property-type">function</span>
+            </dt>
+            <dd> The function to acknowledge the message </dd>
+        </dl>    
+</script>

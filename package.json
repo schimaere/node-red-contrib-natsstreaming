@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-natsstreaming",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "NATS streaming with Node-RED",
   "repository": "https://github.com/schimaere/node-red-contrib-natsstreaming",
   "main": "nats-test.js",
@@ -21,7 +21,8 @@
     "nodes": {
       "nats-streaming-publish": "nats-streaming-publish.js",
       "nats-streaming-subscribe": "/nats-streaming-subscribe.js",
-      "nats-streaming-server": "/nats-streaming-server.js"
+      "nats-streaming-server": "/nats-streaming-server.js",
+      "nats-streaming-acknowledge": "/nats-streaming-acknowledge.js"
     }
   }
 }
