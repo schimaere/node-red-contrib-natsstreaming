@@ -78,8 +78,17 @@ module.exports = function (RED) {
                 else{
                     setStatusRed();
                     node.error('Acknowledge wait has to be a number', config.ackwait);
+                }                
+            }
+
+            if(config.rate_limit == true) {
+                if(!isNaN(config.max_in_flight)) {
+                    opts.setMaxInFlight(config.max_in_flight);
                 }
-                
+                else{
+                    setStatusRed();
+                    node.error(' Max unacknowledged messages has to be a number', config.ackwait);
+                }   
             }
 
             
