@@ -69,7 +69,7 @@ module.exports = function (RED) {
                 opts.setDurableName(config.durable_name);
             }
 
-            // if autoacknowledge is set it with 30s waiting time
+            // if autoacknowledge is false set await time
             if(config.autoacknowledge == false) {                
                 if(!isNaN(config.ackwait)) {
                     opts.setManualAckMode(true);
@@ -81,6 +81,7 @@ module.exports = function (RED) {
                 }                
             }
 
+            // if rate limit is true set max in flight 
             if(config.rate_limit == true) {
                 if(!isNaN(config.max_in_flight)) {
                     opts.setMaxInFlight(config.max_in_flight);
