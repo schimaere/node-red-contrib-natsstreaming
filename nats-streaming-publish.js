@@ -64,7 +64,7 @@ module.exports = function (RED) {
             stan.publish(channel, message, function (err, guid) {
                 if (err) {
                     node.log('publish failed: ' + err);
-                    node.err('problem while publishing message', msg)
+                    node.error('problem while publishing message', + err);
                 } else {
                     node.log('published message with guid: ' + guid);
                 }
