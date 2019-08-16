@@ -66,7 +66,10 @@ module.exports = function (RED) {
                     node.log('publish failed: ' + err);
                     node.error('problem while publishing message', + err);
                 } else {
-                    node.log('published message with guid: ' + guid);
+                    if(config.log == true)
+                    {
+                        node.log('published message with guid: ' + guid);
+                    }
                 }
             });
         });

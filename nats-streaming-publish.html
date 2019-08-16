@@ -20,6 +20,9 @@
             clientID: {
                 value: "",
                 required: true
+            },
+            log: {
+                value: false
             }
         },
         inputs: 1,
@@ -53,6 +56,10 @@
     <div class="form-row">
         <label for="node-input-message"><i class="fa fa-stack-exchange"></i> Message</label>
         <input type="text" id="node-input-message" placeholder="Message">
+    </div>
+    <div class="form-row">
+        <input type="checkbox" id="node-input-log" value="Log" style="display:inline-block checked; width: auto; vertical-align: top;">
+        <label for="node-input-log" style="width: auto"></i> Write to log if message is puglished</label>       
     </div>
     <div class="form-tips">
         <span>Tip: Leav message and/or channel blank if you want to set them via msg properties</span>
