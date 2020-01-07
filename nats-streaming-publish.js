@@ -1,38 +1,55 @@
 "use-strict";
 
 const checkMSG = require('./checkMSG');
+const stan = require('node-nats-streaming')
 
 module.exports = function (RED) {
     function NatsStreamingPublishNode(config) {
         RED.nodes.createNode(this, config);
         let node = this;
-        node.status({
-            fill: "red",
-            shape: "ring",
-            text: "disconnected"
-        });
+        setStatusRed()
         this.server = RED.nodes.getNode(config.server);
-
-        // connect to nats streaming server
-        let stan = require('node-nats-streaming')
-            .connect(this.server.cluster, config.clientID, {
+        let natsInstance = null
+        const connectNats = () => {
+            const instance = stan.connect(this.server.cluster, config.clientID, {
                 url: 'nats://' + this.server.server + ':' + this.server.port
             });
-        
-        // sets status to connected
-        stan.on('connect', function() {
-            node.status({
-                fill: "green",
-                shape: "dot",
-                text: "connected"
+            
+            instance.on('error', function (err) {
+                node.log(err);
+                node.error('Could not connect to server', err);
             });
-        })        
+    
+            instance.on('connect', function () {
+                node.log("connect")
+                setStatusGreen();                
+            });
+    
+            instance.on('disconnect', () => {
+                node.log("disconnect")
+                setStatusRed();
+            })
+    
+            instance.on('reconnect', () => {
+                node.log("reconnect")
+                setStatusGreen();
+            })
+    
+            instance.on('connection_lost', (err) => node.log('connection_lost ' + err));
 
-        stan.on('error', function (err) {
-            node.log(err);
-            node.error('Could not connect to server', err);
-        });
+            return instance
+        }
 
+
+        (function reconnectHandler(){
+            natsInstance = connectNats()
+            natsInstance.on('close', () => {
+                node.log("close received. Explicit reconnect attempt in 60 seconds.")
+                setStatusRed();
+                setTimeout(() => reconnectHandler(), 1000 * 60);
+                natsInstance = null
+            })
+        })()
 
 
         // on input send message
@@ -61,7 +78,7 @@ module.exports = function (RED) {
                 channel = config.channel;
             }
             
-            stan.publish(channel, message, function (err, guid) {
+            natsInstance.publish(channel, message, function (err, guid) {
                 if (err) {
                     node.log('publish failed: ' + err);
                     node.error('problem while publishing message', + err);
@@ -81,8 +98,24 @@ module.exports = function (RED) {
                 shape: "ring",
                 text: "disconnected"
             });
-            stan.close();
+            natsInstance.close();
         });
+
+        function setStatusGreen() {
+            node.status({
+                fill: "green",
+                shape: "dot",
+                text: "connected"
+            });
+        }
+
+        function setStatusRed() {
+            node.status({
+                fill: "red",
+                shape: "ring",
+                text: "disconnected"
+            });
+        }        
 
     }
     RED.nodes.registerType("nats-streaming-publish", NatsStreamingPublishNode);

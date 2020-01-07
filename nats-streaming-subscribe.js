@@ -8,7 +8,8 @@ module.exports = function (RED) {
         var node = this;
         setStatusRed();
         this.server = RED.nodes.getNode(config.server);
-
+        let natsInstance = null
+        let subscription = null
         const connectNats = () => {
             const instance = stan.connect(this.server.cluster, config.clientID, {
                 url: 'nats://' + this.server.server + ':' + this.server.port
@@ -19,7 +20,6 @@ module.exports = function (RED) {
                 node.error('Could not connect to server', err);
             });
     
-            let subscription
             instance.on('connect', function () {
                 node.log("connect")
                 setStatusGreen();
@@ -126,7 +126,7 @@ module.exports = function (RED) {
 
 
         (function reconnectHandler(){
-            let natsInstance = connectNats()
+            natsInstance = connectNats()
             natsInstance.on('close', () => {
                 node.log("close received. Explicit reconnect attempt in 60 seconds.")
                 setStatusRed();
@@ -141,12 +141,12 @@ module.exports = function (RED) {
 
             // if the subscription is durable do not unsubscribe
             if(config.durable) {
-                instance.close();
+                natsInstance.close();
                 done();
             } else {
                 subscription.unsubscribe();
                 subscription.on('unsubscribed', function () {
-                    instance.close();
+                    natsInstance.close();
                     done();
                 });
             }                        
