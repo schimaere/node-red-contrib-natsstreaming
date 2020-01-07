@@ -106,6 +106,14 @@ module.exports = function (RED) {
             
         });
 
+        stan.on('disconnect', () => {
+            setStatusRed();
+        })
+
+        stan.on('reconnect', () => {
+            setStatusGreen();
+        })
+
         // on node close the nats stream subscription is and connection is also closed
         node.on('close', function (done) {
             setStatusRed();
