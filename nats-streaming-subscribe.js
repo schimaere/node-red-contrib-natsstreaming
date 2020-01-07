@@ -1,5 +1,7 @@
 "use-strict";
 
+const stan = require('node-nats-streaming')
+
 module.exports = function (RED) {
     function NatsStreamingSubscribeNode(config) {
         RED.nodes.createNode(this, config);
@@ -7,112 +9,131 @@ module.exports = function (RED) {
         setStatusRed();
         this.server = RED.nodes.getNode(config.server);
 
-        let stan = require('node-nats-streaming')
-            .connect(this.server.cluster, config.clientID, {
+        const connectNats = () => {
+            const instance = stan.connect(this.server.cluster, config.clientID, {
                 url: 'nats://' + this.server.server + ':' + this.server.port
             });
-
-        stan.on('error', function (err) {
-            node.log(err);
-            node.error('Could not connect to server', err);
-        });
-
-        let subscription
-        stan.on('connect', function () {
-            setStatusGreen();
-
-            let opts = stan.subscriptionOptions();
-
-            // set the starting point in the stream, default is last received
-            switch (config.start) {
-                case 'last_received':
-                    opts.setStartWithLastReceived();
-                    break;
-                case 'all':
-                    opts.setDeliverAllAvailable();
-                    break;
-                case 'at_sequence':
-                    if (!isNaN(+config.start_option)) {
-                        opts.setStartAtSequence(config.start_option);
-                    } else {
-                        setStatusRed();
-                        node.error("Start option has to be a number", config.start_option);
-                    }
-                    break;
-                case 'at_date':
-                    if (checkDate(config.start_option)) {
-                        let timeParts;
-                        let startTime
-                        timeParts = config.start_option.split('-');
-                        startTime = new Date(timeParts[0], timeParts[1] - 1, timeParts[2], 0, 0, 0, 0);
-                        opts.setStartTime(startTime);
-                    } else {
-                        setStatusRed();
-                        node.error("Wrong format in start option. Has to be YYYY-MM-DD", config.start_option);
-                    }
-                    break;
-                case 'at_time':
-                    if (!isNaN(config.start_option)) {
-                        opts.setStartAtTimeDelta(config.start_option);
-                    } else {
-                        setStatusRed();
-                        node.error('Start option has to be a number', config.start_option);
-                    }
-                    break;
-                default:
-                    opts.setStartWithLastReceived();
-                    break;
-            }
-
-            // if durable is true sets it with durable_name
-            if (config.durable) {
-                opts.setDurableName(config.durable_name);
-            }
-
-            // if autoacknowledge is false set await time
-            if(config.autoacknowledge == false) {                
-                if(!isNaN(config.ackwait)) {
-                    opts.setManualAckMode(true);
-                    opts.setAckWait(config.ackwait * 1000);
-                }
-                else{
-                    setStatusRed();
-                    node.error('Acknowledge wait has to be a number', config.ackwait);
-                }                
-            }
-
-            // if rate limit is true set max in flight 
-            if(config.rate_limit == true) {
-                if(!isNaN(config.max_in_flight)) {
-                    opts.setMaxInFlight(config.max_in_flight);
-                }
-                else{
-                    setStatusRed();
-                    node.error(' Max unacknowledged messages has to be a number', config.ackwait);
-                }   
-            }
-
             
+            instance.on('error', function (err) {
+                node.log(err);
+                node.error('Could not connect to server', err);
+            });
+    
+            let subscription
+            instance.on('connect', function () {
+                node.log("connect")
+                setStatusGreen();
+    
+                let opts = instance.subscriptionOptions();
+    
+                // set the starting point in the stream, default is last received
+                switch (config.start) {
+                    case 'last_received':
+                        opts.setStartWithLastReceived();
+                        break;
+                    case 'all':
+                        opts.setDeliverAllAvailable();
+                        break;
+                    case 'at_sequence':
+                        if (!isNaN(+config.start_option)) {
+                            opts.setStartAtSequence(config.start_option);
+                        } else {
+                            setStatusRed();
+                            node.error("Start option has to be a number", config.start_option);
+                        }
+                        break;
+                    case 'at_date':
+                        if (checkDate(config.start_option)) {
+                            let timeParts;
+                            let startTime
+                            timeParts = config.start_option.split('-');
+                            startTime = new Date(timeParts[0], timeParts[1] - 1, timeParts[2], 0, 0, 0, 0);
+                            opts.setStartTime(startTime);
+                        } else {
+                            setStatusRed();
+                            node.error("Wrong format in start option. Has to be YYYY-MM-DD", config.start_option);
+                        }
+                        break;
+                    case 'at_time':
+                        if (!isNaN(config.start_option)) {
+                            opts.setStartAtTimeDelta(config.start_option);
+                        } else {
+                            setStatusRed();
+                            node.error('Start option has to be a number', config.start_option);
+                        }
+                        break;
+                    default:
+                        opts.setStartWithLastReceived();
+                        break;
+                }
+    
+                // if durable is true sets it with durable_name
+                if (config.durable) {
+                    opts.setDurableName(config.durable_name);
+                }
+    
+                // if autoacknowledge is false set await time
+                if(config.autoacknowledge == false) {                
+                    if(!isNaN(config.ackwait)) {
+                        opts.setManualAckMode(true);
+                        opts.setAckWait(config.ackwait * 1000);
+                    }
+                    else{
+                        setStatusRed();
+                        node.error('Acknowledge wait has to be a number', config.ackwait);
+                    }                
+                }
+    
+                // if rate limit is true set max in flight 
+                if(config.rate_limit == true) {
+                    if(!isNaN(config.max_in_flight)) {
+                        opts.setMaxInFlight(config.max_in_flight);
+                    }
+                    else{
+                        setStatusRed();
+                        node.error(' Max unacknowledged messages has to be a number', config.ackwait);
+                    }   
+                }
+    
+                
+    
+                // if queue group is true sets it with queue_group_name
+                if (config.queue_group) {
+                    subscription = instance.subscribe(config.channel, config.queue_group_name, opts);
+                } else {
+                    subscription = instance.subscribe(config.channel, opts);
+                }
+    
+                // on nats-streaming message
+                subscription.on('message', msg => handleMessage(msg));
+                
+            });
+    
+            instance.on('disconnect', () => {
+                node.log("disconnect")
+                setStatusRed();
+            })
+    
+            instance.on('reconnect', () => {
+                node.log("reconnect")
+                setStatusGreen();
+            })
+    
+            instance.on('connection_lost', (err) => node.log('connection_lost ' + err));
 
-            // if queue group is true sets it with queue_group_name
-            if (config.queue_group) {
-                subscription = stan.subscribe(config.channel, config.queue_group_name, opts);
-            } else {
-                subscription = stan.subscribe(config.channel, opts);
-            }
+            return instance
+        }
 
-            // on nats-streaming message
-            subscription.on('message', msg => handleMessage(msg));
-            
-        });
 
-        stan.on('disconnect', () => {
-            setStatusRed();
-        })
-
-        stan.on('reconnect', () => {
-            setStatusGreen();
-        })
+        (function reconnectHandler(){
+            let natsInstance = connectNats()
+            natsInstance.on('close', () => {
+                node.log("close received. Explicit reconnect attempt in 60 seconds.")
+                setStatusRed();
+                setTimeout(() => reconnectHandler(), 1000 * 60);
+                natsInstance = null
+            })
+        })();
 
         // on node close the nats stream subscription is and connection is also closed
         node.on('close', function (done) {
@@ -120,12 +141,12 @@ module.exports = function (RED) {
 
             // if the subscription is durable do not unsubscribe
             if(config.durable) {
-                stan.close();
+                instance.close();
                 done();
             } else {
                 subscription.unsubscribe();
                 subscription.on('unsubscribed', function () {
-                    stan.close();
+                    instance.close();
                     done();
                 });
             }                        
