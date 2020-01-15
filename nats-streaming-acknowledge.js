@@ -9,6 +9,7 @@ module.exports = function (RED) {
         node.on('input', function (msg) {
             if(msg.autoacknowledge == false)
             {
+                node.log("Acknowledging message")
                 msg.ack();          
             }            
         });
