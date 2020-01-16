@@ -5,7 +5,8 @@
   "repository": "https://github.com/schimaere/node-red-contrib-natsstreaming",
   "main": "nats-test.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "lint": "eslint ."
   },
   "keywords": [
     "node-red",
@@ -17,12 +18,20 @@
   "dependencies": {
     "node-nats-streaming": "^0.2.6"
   },
+  "devDependencies": {
+    "eslint": "6.8.0",
+    "eslint-config-standard": "14.1.0",
+    "eslint-plugin-import": "2.20.0",
+    "eslint-plugin-node": "11.0.0",
+    "eslint-plugin-promise": "4.2.1",
+    "eslint-plugin-standard": "4.0.1"
+  },
   "node-red": {
     "nodes": {
       "nats-streaming-publish": "nats-streaming-publish.js",
-      "nats-streaming-subscribe": "/nats-streaming-subscribe.js",
-      "nats-streaming-server": "/nats-streaming-server.js",
-      "nats-streaming-acknowledge": "/nats-streaming-acknowledge.js"
+      "nats-streaming-subscribe": "nats-streaming-subscribe.js",
+      "nats-streaming-server": "nats-streaming-server.js",
+      "nats-streaming-acknowledge": "nats-streaming-acknowledge.js"
     }
   }
 }
