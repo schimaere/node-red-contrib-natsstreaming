@@ -15,7 +15,8 @@ module.exports = function (RED) {
 
     const connectNats = () => {
       const instance = stan.connect(this.server.cluster, config.clientID, {
-        url: 'nats://' + this.server.server + ':' + this.server.port
+        url: 'nats://' + this.server.server + ':' + this.server.port,
+        waitOnFirstConnect: true
       })
 
       instance.on('error', function (err) {
